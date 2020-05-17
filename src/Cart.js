@@ -48,7 +48,7 @@ export default class Cart extends Component {
 
         <View style={{flex: 1}}>
           <ScrollView>
-            {this.state.dataCart.map((item) => {
+            {this.state.dataCart.map((item, i) => {
               return (
                 <View
                   style={{
@@ -64,7 +64,7 @@ export default class Cart extends Component {
                     resizeMode={'contain'}
                     style={{width: width / 3, height: width / 3}}
                     source={{
-                      uri: 'http://tutofox.com/foodapp/food/pizza/pizza-1.png',
+                      uri: item.food.image,
                     }}
                   />
                   <View
@@ -75,7 +75,7 @@ export default class Cart extends Component {
                     }}>
                     <View>
                       <Text style={{fontSize: 20, fontWeight: 'bold'}}>
-                        sss
+                        {item.food.name}
                       </Text>
                       <Text>Lorem ipsum food</Text>
                     </View>
@@ -97,50 +97,91 @@ export default class Cart extends Component {
 
                       <View
                         style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Icon
-                          name="ios-remove-circle"
-                          size={30}
-                          color={'#33c37d'}
-                        />
+                        <TouchableOpacity
+                          onPress={() => this.onChangeQuat(i, false)}>
+                          <Icon
+                            name="ios-remove-circle"
+                            size={30}
+                            color={'#33c37d'}
+                          />
+                        </TouchableOpacity>
+
                         <Text
                           style={{fontWeight: 'bold', paddingHorizontal: 8}}>
                           {item.quantity}
                         </Text>
-                        <Icon
-                          name="ios-add-circle"
-                          size={30}
-                          color={'#33c37d'}
-                        />
+                        <TouchableOpacity
+                          onPress={() => this.onChangeQuat(i, true)}>
+                          <Icon
+                            name="ios-add-circle"
+                            size={30}
+                            color={'#33c37d'}
+                          />
+                        </TouchableOpacity>
                       </View>
                     </View>
                   </View>
                 </View>
               );
             })}
+            <View style={{height: 20}} />
 
-            <View style={{height: 20}} />
-            <TouchableOpacity
-              style={{
-                backgroundColor: '#33c37d',
-                width: width - 40,
-                alignItems: 'center',
-                padding: 10,
-                borderRadius: 5,
-                margin: 20,
-              }}>
-              <Text
-                style={{
-                  fontSize: 24,
-                  fontWeight: 'bold',
-                  color: 'white',
-                }}>
-                CHECKOUT
-              </Text>
-            </TouchableOpacity>
-            <View style={{height: 20}} />
+            <Text style={{fontSize: 28, color: '#33c37d', textAlign: 'center'}}>
+              $ {this.onLoadTotal()}
+            </Text>
           </ScrollView>
+
+          <View style={{height: 10}} />
+
+          <TouchableOpacity
+            style={{
+              backgroundColor: '#33c37d',
+              width: width - 40,
+              alignItems: 'center',
+              padding: 10,
+              borderRadius: 5,
+              margin: 20,
+            }}>
+            <Text
+              style={{
+                fontSize: 24,
+                fontWeight: 'bold',
+                color: 'white',
+              }}>
+              CHECKOUT
+            </Text>
+          </TouchableOpacity>
+          <View style={{height: 10}} />
         </View>
       </View>
     );
+  }
+
+  onLoadTotal() {
+    var total = 0;
+    const cart = this.state.dataCart;
+
+    for (var i = 0; i < cart.length; i++) {
+      total = total + cart[i].price * cart[i].quantity;
+    }
+    return total;
+  }
+
+  onChangeQuat(i, type) {
+    const cart = this.state.dataCart;
+    let cant = cart[i].quantity;
+
+    if (type) {
+      cant = cant + 1;
+      cart[i].quantity = cant;
+      this.setState({dataCart: cart});
+    } else if (type === false && cant >= 2) {
+      cant = cant - 1;
+      cart[i].quantity = cant;
+      this.setState({dataCart: cart});
+    } else if (type === false && cant === 1) {
+      cart.splice(i, 1);
+      this.setState({dataCart: cart});
+    }
   }
 }

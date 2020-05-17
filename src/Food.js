@@ -177,7 +177,7 @@ export default class App extends Component {
       .then((datacart) => {
         if (datacart !== null) {
           const cart = JSON.parse(datacart);
-          cart.push(datacart);
+          cart.push(itemcart);
           AsyncStorage.setItem('cart', JSON.stringify(cart));
         } else {
           const cart = [];
